@@ -1,4 +1,4 @@
-package br.com.project.appdeteste.ui.screens
+package br.com.project.hidra.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

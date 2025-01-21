@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AppDeTeste"
+rootProject.name = "Hidra+"
 include(":app")
  

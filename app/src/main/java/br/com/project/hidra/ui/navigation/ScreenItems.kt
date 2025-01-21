@@ -1,4 +1,4 @@
-package br.com.project.appdeteste.ui.navigation
+package br.com.project.hidra.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List

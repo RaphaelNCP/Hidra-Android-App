@@ -10,13 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppDeTeste"
+        android:theme="@style/Theme.Hidra"
         tools:targetApi="31">
         <activity
-            android:name=".ui.MainActivity"
+            android:name="br.com.project.hidra.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppDeTeste">
+            android:theme="@style/Theme.Hidra">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
