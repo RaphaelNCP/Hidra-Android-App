@@ -32,6 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.project.hidra.data.repository.ConsumptionRegisterRepository
+import br.com.project.hidra.domain.usecase.GetConsumptionRegisterUseCase
+import br.com.project.hidra.domain.usecase.SaveConsumptionRegisterUseCase
 import br.com.project.hidra.ui.navigation.ScreenItem
 import br.com.project.hidra.ui.screens.AddScreen
 import br.com.project.hidra.ui.screens.home.HomeScreen
@@ -143,7 +146,10 @@ fun App(modifier: Modifier = Modifier) {
                 .background(Hidra_White)
         ) { page ->
             when (screens[page]) {
-                ScreenItem.Home -> HomeScreen()
+                ScreenItem.Home -> HomeScreen(
+                    saveConsumptionRegisterUseCase = SaveConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
+                    getConsumptionRegisterUseCase = GetConsumptionRegisterUseCase(ConsumptionRegisterRepository())
+                )
                 ScreenItem.Add -> AddScreen()
                 ScreenItem.Settings -> SettingsScreen()
             }

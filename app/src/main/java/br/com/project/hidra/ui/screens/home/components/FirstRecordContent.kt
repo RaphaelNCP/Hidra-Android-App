@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.project.hidra.R
@@ -49,7 +48,9 @@ fun FirstRecordContent(viewModel: HomeViewModel, state: HomeUiState) {
 
         )
         Button(
-            onClick = { viewModel.onRegisterWater() },
+            onClick = {
+                viewModel.onRegisterUser()
+                      },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 16.dp)
@@ -69,14 +70,5 @@ fun FirstRecordContent(viewModel: HomeViewModel, state: HomeUiState) {
             )
         }
     }
-    RegisterModal(showDialog = state.isRegisterModalOpen, onDismiss = {viewModel.onCloseRegisterWater()}, viewModel = viewModel, state = state)
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFF6F4F0)
-@Composable
-private fun FirstRecordContentPreview() {
-    FirstRecordContent(
-        viewModel = HomeViewModel(),
-        state = HomeUiState()
-    )
+    RegisterModal(showDialog = state.isRegisterModalOpen, onDismiss = {viewModel.onCloseRegisterUser()}, viewModel = viewModel, state = state)
 }

@@ -45,7 +45,7 @@ import br.com.project.hidra.ui.theme.Hidra_Teal
 import br.com.project.hidra.ui.theme.Hidra_White
 
 @Composable
-fun RegisterModal(
+fun RegisterWaterModal(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     viewModel: HomeViewModel,
@@ -53,7 +53,7 @@ fun RegisterModal(
 ) {
     if (showDialog) {
         Dialog(onDismissRequest = onDismiss) {
-            RegisterModalContent(
+            RegisterWaterModalContent(
                 viewModel = viewModel,
                 state = state
             )
@@ -62,13 +62,10 @@ fun RegisterModal(
 }
 
 @Composable
-fun RegisterModalContent(
+fun RegisterWaterModalContent(
     viewModel: HomeViewModel,
     state: HomeUiState
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    val opcoes = listOf("Até 17 anos", "De 18 a 55 anos", "De 56 a 65 anos", "Mais de 65 anos")
-
     Column(
         modifier = Modifier
             .background(Hidra_White, shape = RoundedCornerShape(16.dp))
@@ -77,7 +74,7 @@ fun RegisterModalContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Vamos calcular o seu consumo de água diário ideal",
+            text = "Registre seu consumo de água",
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
@@ -86,7 +83,7 @@ fun RegisterModalContent(
         )
         Spacer(modifier = Modifier.padding(8.dp))
         Text(
-            text = "Qual seu nome?",
+            text = "Quantos mL de água você bebeu?",
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
@@ -95,81 +92,14 @@ fun RegisterModalContent(
         )
 
         OutlinedTextField(
-            value = state.name,
+            value = state.waterRegister.toString(),
             onValueChange = {
-                viewModel.onNameChange(it)
+                viewModel.onWaterRegisterChange(it.toDouble())
             },
             label = { Text("Digite seu nome") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Text(
-            text = "Qual sua idade?",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = Hidra_Navy
-            ),
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize(Alignment.TopStart)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded = !expanded }
-                    .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp))
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = state.age.ifEmpty { "Selecione uma opção" },
-                    color = if (state.age.isNotEmpty()) Color.Black else Color.Gray
-                )
-                Icon(
-                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = "Abrir menu",
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                )
-            }
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                opcoes.forEach { opcao ->
-                    DropdownMenuItem(
-                        text = { Text(opcao) },
-                        onClick = {
-                            viewModel.onAgeChange(opcao)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-
-        Text(
-            text = "Qual seu peso em Kg?",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = Hidra_Navy
-            ),
-        )
-
-        OutlinedTextField(
-            value = state.weight,
-            onValueChange = {
-                viewModel.onWeightChange(it)
-            },
-            label = { Text("Digite seu peso") },
-            modifier = Modifier.fillMaxWidth()
-        )
 
         Button(
             onClick = {
@@ -183,10 +113,10 @@ fun RegisterModalContent(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Hidra_Teal,
             ),
-            enabled = state.name.isNotEmpty() && state.age.isNotEmpty() && state.weight.isNotEmpty()
+            enabled = state.waterRegister > 0
         ) {
             Text(
-                text = "Começar",
+                text = "Registrar",
                 style = TextStyle(
                     color = Hidra_White,
                     fontWeight = FontWeight.Bold,

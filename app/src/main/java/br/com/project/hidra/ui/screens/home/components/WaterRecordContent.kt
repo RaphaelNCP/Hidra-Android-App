@@ -46,7 +46,7 @@ fun WaterRecordContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Ola, user. Vamos conferir o seu consumo de água!", style = TextStyle(
+        Text(text = "Olá, ${state.consumptionRegisterList[0].name}. Vamos conferir o seu consumo de água!", style = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             color = Hidra_Navy,
@@ -72,7 +72,7 @@ fun WaterRecordContent(
                 )
                 Column {
                     Text(
-                        text = "3.5/4 LITROS",
+                        text = "0/${state.waterAmount} LITROS",
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 30.sp,
@@ -98,7 +98,9 @@ fun WaterRecordContent(
             ) {
                 Button(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f).height(60.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(60.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Hidra_Navy
@@ -121,8 +123,10 @@ fun WaterRecordContent(
                 }
                 Spacer(modifier = Modifier.size(16.dp))
                 Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f).height(60.dp),
+                    onClick = { viewModel.onRegisterWater() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(60.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Hidra_Navy
@@ -142,13 +146,6 @@ fun WaterRecordContent(
         Spacer(modifier = Modifier.weight(1f))
         Image(painter = painterResource(id = R.drawable.happy), contentDescription = null)
     }
+    RegisterWaterModal(showDialog = state.isWaterModalOpen, onDismiss = { viewModel.onCloseRegisterWater() }, viewModel = viewModel, state = state)
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFF6F4F0,)
-@Composable
-private fun WaterRecordContentPreview() {
-    WaterRecordContent(
-        viewModel = HomeViewModel(),
-        state = HomeUiState()
-    )
-}

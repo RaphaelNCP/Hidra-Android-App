@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.androidx.material.icon.extended)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore)
+    implementation(libs.androidx.effects.shimmer)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
