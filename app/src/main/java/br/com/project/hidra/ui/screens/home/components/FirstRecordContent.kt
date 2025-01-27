@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.project.appdeteste.R
+import br.com.project.hidra.R
 import br.com.project.hidra.ui.screens.home.HomeViewModel
 import br.com.project.hidra.ui.theme.Hidra_Teal
 import br.com.project.hidra.ui.theme.Hidra_White

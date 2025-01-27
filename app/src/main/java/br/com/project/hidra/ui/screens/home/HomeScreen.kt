@@ -23,7 +23,7 @@ fun HomeScreen( viewModel: HomeViewModel = viewModel() ) {
     Box(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)) {
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
         Column(
             modifier = Modifier.align(Alignment.Center)
         ) {

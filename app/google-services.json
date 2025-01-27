@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "204686385779",
+    "project_id": "hidra-86ad4",
+    "storage_bucket": "hidra-86ad4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204686385779:android:883ec42ad367c91d30c006",
+        "android_client_info": {
+          "package_name": "br.com.project.hidra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZhUt0bZtWuelrTMRvKk7j_9CvNGVXGPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
