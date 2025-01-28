@@ -72,7 +72,8 @@ fun WaterRecordContent(
                 )
                 Column {
                     Text(
-                        text = "0/${state.waterAmount} LITROS",
+                        text = "${"%.1f".format(state.dailyTotalWater)}/${"%.1f".format(state.waterAmount)} LITROS"
+                        ,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 30.sp,
@@ -81,7 +82,7 @@ fun WaterRecordContent(
                         modifier = Modifier.padding(start = 16.dp)
                     )
                     Text(
-                        text = "Faltam 0.5 litros para atingir a meta diária",
+                        text = "Faltam ${"%.1f".format(state.waterAmount - state.dailyTotalWater)} litros para atingir a meta diária",
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,

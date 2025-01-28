@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +45,7 @@ import br.com.project.hidra.ui.screens.home.HomeViewModel
 import br.com.project.hidra.ui.theme.Hidra_Navy
 import br.com.project.hidra.ui.theme.Hidra_Teal
 import br.com.project.hidra.ui.theme.Hidra_White
+import java.time.LocalDate
 
 @Composable
 fun RegisterWaterModal(
@@ -94,16 +97,19 @@ fun RegisterWaterModalContent(
         OutlinedTextField(
             value = state.waterRegister.toString(),
             onValueChange = {
-                viewModel.onWaterRegisterChange(it.toDouble())
+                if (it.isNotEmpty()) viewModel.onWaterRegisterChange(it.toInt())
+                else viewModel.onWaterRegisterChange(0)
+
             },
             label = { Text("Digite seu nome") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
 
 
         Button(
             onClick = {
-                viewModel.saveConsumptionRegister()
+                viewModel.addWaterConsumption()
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)

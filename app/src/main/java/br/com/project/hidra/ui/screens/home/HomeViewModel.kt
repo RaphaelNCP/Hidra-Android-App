@@ -3,7 +3,9 @@ package br.com.project.hidra.ui.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.project.hidra.data.model.ConsumptionRegisterModel
+import br.com.project.hidra.domain.usecase.AddWaterConsumptionUseCase
 import br.com.project.hidra.domain.usecase.GetConsumptionRegisterUseCase
+import br.com.project.hidra.domain.usecase.GetDailyWaterTotalUseCase
 import br.com.project.hidra.domain.usecase.SaveConsumptionRegisterUseCase
 import br.com.project.hidra.ui.screens.home.components.HomeUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +15,49 @@ import java.util.UUID
 
 class HomeViewModel(
     private val saveConsumptionRegisterUseCase: SaveConsumptionRegisterUseCase,
-    private val getConsumptionRegisterUseCase: GetConsumptionRegisterUseCase
+    private val getConsumptionRegisterUseCase: GetConsumptionRegisterUseCase,
+    private val getDailyTotalWaterUseCase: GetDailyWaterTotalUseCase,
+    private val addWaterConsumptionUseCase: AddWaterConsumptionUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
-    //Salvar registro de água
+    //Adicionar consumo de água
+    fun addWaterConsumption() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            try {
+                addWaterConsumptionUseCase(_uiState.value.waterRegister)
+                getConsumptionRegister()
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    isWaterModalOpen = false
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
+    }
+
+    //Buscar consumo diário de água
+    fun getDailyTotalWater() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+
+            try {
+                val dailyTotalWater = getDailyTotalWaterUseCase()
+                _uiState.value = _uiState.value.copy(
+                    dailyTotalWater = dailyTotalWater.toDouble()/1000,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isLoading = false)
+            }
+        }
+    }
+
+    //Salvar registro de água a ser consumida
     fun saveConsumptionRegister() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -35,6 +74,7 @@ class HomeViewModel(
                     isLoading = false,
                     isRegisterModalOpen = false
                 )
+                getConsumptionRegister()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isLoading = false)
             }
@@ -54,6 +94,7 @@ class HomeViewModel(
                     isLoading = false
                 )
                 calculateWaterAmount()
+                getDailyTotalWater()
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isLoading = false)
             }
@@ -86,7 +127,7 @@ class HomeViewModel(
         _uiState.value = _uiState.value.copy(name = name)
     }
 
-    fun onWaterRegisterChange(waterRegister: Double) {
+    fun onWaterRegisterChange(waterRegister: Int) {
         _uiState.value = _uiState.value.copy(waterRegister = waterRegister)
     }
 

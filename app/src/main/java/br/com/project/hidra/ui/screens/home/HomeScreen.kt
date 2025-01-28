@@ -14,7 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.project.hidra.ui.screens.home.components.WaterRecordContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.project.hidra.domain.usecase.AddWaterConsumptionUseCase
 import br.com.project.hidra.domain.usecase.GetConsumptionRegisterUseCase
+import br.com.project.hidra.domain.usecase.GetDailyWaterTotalUseCase
 import br.com.project.hidra.domain.usecase.SaveConsumptionRegisterUseCase
 import br.com.project.hidra.ui.screens.home.components.FirstRecordContent
 import com.valentinilk.shimmer.shimmer
@@ -24,10 +26,14 @@ import com.valentinilk.shimmer.shimmer
 fun HomeScreen(
     saveConsumptionRegisterUseCase: SaveConsumptionRegisterUseCase,
     getConsumptionRegisterUseCase: GetConsumptionRegisterUseCase,
+    getDailyTotalWaterUseCase: GetDailyWaterTotalUseCase,
+    addWaterConsumptionUseCase: AddWaterConsumptionUseCase
 ) {
     val factory = HomeViewModelFactory(
         saveConsumptionRegisterUseCase = saveConsumptionRegisterUseCase,
-        getConsumptionRegisterUseCase = getConsumptionRegisterUseCase
+        getConsumptionRegisterUseCase = getConsumptionRegisterUseCase,
+        getDailyTotalWaterUseCase = getDailyTotalWaterUseCase,
+        addWaterConsumptionUseCase = addWaterConsumptionUseCase
     )
 
     val viewModel: HomeViewModel = viewModel(factory = factory)

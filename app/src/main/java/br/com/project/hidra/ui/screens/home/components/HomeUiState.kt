@@ -10,8 +10,9 @@ data class HomeUiState(
     val age : String = "",
     val weight : String = "",
     val name : String = "",
-    val waterRegister : Double = 0.0,
+    val waterRegister : Int = 0,
     val consumptionRegisterList: List<ConsumptionRegisterModel> = emptyList(),
     val consumptionRegister: ConsumptionRegisterModel? = null,
     val waterAmount: Double = 0.0,
+    val dailyTotalWater: Double = 0.0
 )

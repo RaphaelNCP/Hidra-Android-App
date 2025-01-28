@@ -33,7 +33,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.project.hidra.data.repository.ConsumptionRegisterRepository
+import br.com.project.hidra.data.repository.WaterRegisterRepository
+import br.com.project.hidra.domain.usecase.AddWaterConsumptionUseCase
 import br.com.project.hidra.domain.usecase.GetConsumptionRegisterUseCase
+import br.com.project.hidra.domain.usecase.GetDailyWaterTotalUseCase
 import br.com.project.hidra.domain.usecase.SaveConsumptionRegisterUseCase
 import br.com.project.hidra.ui.navigation.ScreenItem
 import br.com.project.hidra.ui.screens.AddScreen
@@ -148,7 +151,9 @@ fun App(modifier: Modifier = Modifier) {
             when (screens[page]) {
                 ScreenItem.Home -> HomeScreen(
                     saveConsumptionRegisterUseCase = SaveConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
-                    getConsumptionRegisterUseCase = GetConsumptionRegisterUseCase(ConsumptionRegisterRepository())
+                    getConsumptionRegisterUseCase = GetConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
+                    getDailyTotalWaterUseCase = GetDailyWaterTotalUseCase(WaterRegisterRepository()),
+                    addWaterConsumptionUseCase = AddWaterConsumptionUseCase(WaterRegisterRepository())
                 )
                 ScreenItem.Add -> AddScreen()
                 ScreenItem.Settings -> SettingsScreen()
