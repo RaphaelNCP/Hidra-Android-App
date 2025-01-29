@@ -51,7 +51,7 @@ fun AlarmConfirmationModalContent(
     viewModel: HomeViewModel,
     state: HomeUiState
 ) {
-    val options = listOf("1 minuto", "1 hora", "2 horas", "3 horas", "4 horas")
+    val options = listOf("10 segundos", "1 hora", "2 horas", "3 horas", "4 horas")
     var selectedOption by remember { mutableStateOf<String?>(null) }
 
     Column(
@@ -101,7 +101,7 @@ fun AlarmConfirmationModalContent(
                 selectedOption?.let { option ->
                     viewModel.saveAndScheduleReminder(
                         when (option) {
-                            "1 minuto" -> 60000L
+                            "10 segundos" -> 10000L
                             "1 hora" -> 3600000L
                             "2 horas" -> 7200000L
                             "3 horas" -> 10800000L
