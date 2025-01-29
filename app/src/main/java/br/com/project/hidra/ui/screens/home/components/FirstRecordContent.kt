@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.project.hidra.R
@@ -28,8 +29,9 @@ fun FirstRecordContent(viewModel: HomeViewModel, state: HomeUiState) {
         Text(
             text = "Registre seu consumo de água",
             style = TextStyle(
-                fontSize = 24.sp,
-                color = Black
+                fontSize = 22.sp,
+                color = Black,
+                textAlign = TextAlign.Center
             ),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )

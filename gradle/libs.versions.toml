@@ -32,6 +32,7 @@ androidx-effects-shimmer = { group = "com.valentinilk.shimmer", name = "compose-
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-cloud-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 
 [plugins]

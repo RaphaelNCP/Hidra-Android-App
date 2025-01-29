@@ -1,29 +1,16 @@
 package br.com.project.hidra.ui.screens.home.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,23 +19,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.project.hidra.ui.screens.home.HomeViewModel
 import br.com.project.hidra.ui.theme.Hidra_Navy
 import br.com.project.hidra.ui.theme.Hidra_Teal
 import br.com.project.hidra.ui.theme.Hidra_White
-import java.time.LocalDate
 
 @Composable
-fun RegisterWaterModal(
+fun AlarmConfirmationModal(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     viewModel: HomeViewModel,
@@ -56,7 +38,7 @@ fun RegisterWaterModal(
 ) {
     if (showDialog) {
         Dialog(onDismissRequest = onDismiss) {
-            RegisterWaterModalContent(
+            AlarmConfirmationModalContent(
                 viewModel = viewModel,
                 state = state
             )
@@ -65,10 +47,13 @@ fun RegisterWaterModal(
 }
 
 @Composable
-fun RegisterWaterModalContent(
+fun AlarmConfirmationModalContent(
     viewModel: HomeViewModel,
     state: HomeUiState
 ) {
+    val options = listOf("1 minuto", "1 hora", "2 horas", "3 horas", "4 horas")
+    var selectedOption by remember { mutableStateOf<String?>(null) }
+
     Column(
         modifier = Modifier
             .background(Hidra_White, shape = RoundedCornerShape(16.dp))
@@ -77,7 +62,7 @@ fun RegisterWaterModalContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Registre seu consumo de água",
+            text = "Selecione o intervalo de tempo das notificações",
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
@@ -85,44 +70,60 @@ fun RegisterWaterModalContent(
             ),
         )
         Spacer(modifier = Modifier.padding(8.dp))
-        Text(
-            text = "Quantos mL de água você bebeu?",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = Hidra_Navy
-            ),
-        )
 
-        OutlinedTextField(
-            value = state.waterRegister.toString(),
-            onValueChange = { input ->
-                val filteredInput = input.filter { it.isDigit() }
-                viewModel.onWaterRegisterChange(filteredInput.toInt())
-
-            },
-            label = { Text("Digite os mL") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        options.forEach { option ->
+            Button(
+                onClick = {
+                    selectedOption = option
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 16.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (selectedOption == option) Hidra_Teal else Hidra_Navy,
+                ),
+            ) {
+                Text(
+                    text = option,
+                    style = TextStyle(
+                        color = Hidra_White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                )
+            }
+        }
 
         Button(
             onClick = {
-                viewModel.addWaterConsumption()
+                selectedOption?.let { option ->
+                    viewModel.saveAndScheduleReminder(
+                        when (option) {
+                            "1 minuto" -> 60000L
+                            "1 hora" -> 3600000L
+                            "2 horas" -> 7200000L
+                            "3 horas" -> 10800000L
+                            "4 horas" -> 14400000L
+                            else -> 0L
+                        }
+                    )
+                }
+                viewModel.onCloseAlarmModal()
             },
+            enabled = selectedOption != null,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 16.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Hidra_Teal,
+                containerColor = if (selectedOption != null) Hidra_Teal else Hidra_Navy,
             ),
-            enabled = state.waterRegister > 0
         ) {
             Text(
-                text = "Registrar",
+                text = "Ativar lembrete",
                 style = TextStyle(
                     color = Hidra_White,
                     fontWeight = FontWeight.Bold,
@@ -132,4 +133,3 @@ fun RegisterWaterModalContent(
         }
     }
 }
-

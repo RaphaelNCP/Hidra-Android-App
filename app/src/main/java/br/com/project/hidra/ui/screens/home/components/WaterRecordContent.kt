@@ -93,60 +93,74 @@ fun WaterRecordContent(
                 }
             }
         }
-            Row(
+        Row(
 
-                verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = { viewModel.onOpenAlarmModal() },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(60.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Hidra_Navy
+                )
             ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Hidra_Navy
-                    )
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Ativar lembrete",
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                color = Hidra_White,
-                                textAlign = TextAlign.Center
-                            )
-                        )
-                        Spacer(modifier = Modifier.size(2.dp))
-                        Icon(imageVector = Icons.Default.Notifications, contentDescription = null)
-                    }
-                }
-                Spacer(modifier = Modifier.size(16.dp))
-                Button(
-                    onClick = { viewModel.onRegisterWater() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(60.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Hidra_Navy
-                    )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Registrar consumo",
+                        text = "Ativar lembrete",
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
                             color = Hidra_White,
                             textAlign = TextAlign.Center
                         )
                     )
+                    Spacer(modifier = Modifier.size(2.dp))
+                    Icon(imageVector = Icons.Default.Notifications, contentDescription = null)
                 }
             }
+            Spacer(modifier = Modifier.size(16.dp))
+            Button(
+                onClick = { viewModel.onRegisterWater() },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(60.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Hidra_Navy
+                )
+            ) {
+                Text(
+                    text = "Registrar consumo",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        color = Hidra_White,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+        }
         Spacer(modifier = Modifier.weight(1f))
         Image(painter = painterResource(id = R.drawable.happy), contentDescription = null)
     }
-    RegisterWaterModal(showDialog = state.isWaterModalOpen, onDismiss = { viewModel.onCloseRegisterWater() }, viewModel = viewModel, state = state)
+    RegisterWaterModal(
+        showDialog = state.isWaterModalOpen,
+        onDismiss = { viewModel.onCloseRegisterWater() },
+        viewModel = viewModel,
+        state = state
+    )
+    AlarmConfirmationModal(
+        showDialog = state.isAlarmModalOpen,
+        onDismiss = {
+            viewModel.cancelReminder()
+            viewModel.onCloseAlarmModal()
+        },
+        viewModel = viewModel,
+        state = state
+    )
 }
 

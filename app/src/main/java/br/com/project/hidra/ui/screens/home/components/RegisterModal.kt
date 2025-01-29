@@ -166,10 +166,9 @@ fun RegisterModalContent(
 
         OutlinedTextField(
             value = state.weight,
-            onValueChange = {
-                if (it.isNotEmpty())
-                viewModel.onWeightChange(it)
-                else viewModel.onWeightChange("0")
+            onValueChange = { input ->
+                val filteredInput = input.filter { it.isDigit() }
+                viewModel.onWeightChange(filteredInput)
             },
             label = { Text("Digite seu peso") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

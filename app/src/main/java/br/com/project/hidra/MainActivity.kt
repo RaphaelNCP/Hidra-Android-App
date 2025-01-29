@@ -1,55 +1,51 @@
 package br.com.project.hidra
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import br.com.project.hidra.data.local.WaterReminderLocalDataSource
 import br.com.project.hidra.data.repository.ConsumptionRegisterRepository
 import br.com.project.hidra.data.repository.WaterRegisterRepository
+import br.com.project.hidra.data.repository.WaterReminderRepository
 import br.com.project.hidra.domain.usecase.AddWaterConsumptionUseCase
+import br.com.project.hidra.domain.usecase.CancelWaterReminderUseCase
 import br.com.project.hidra.domain.usecase.GetConsumptionRegisterUseCase
 import br.com.project.hidra.domain.usecase.GetDailyWaterTotalUseCase
 import br.com.project.hidra.domain.usecase.SaveConsumptionRegisterUseCase
-import br.com.project.hidra.ui.navigation.ScreenItem
-import br.com.project.hidra.ui.screens.AddScreen
+import br.com.project.hidra.domain.usecase.ScheduleWaterReminderUseCase
 import br.com.project.hidra.ui.screens.home.HomeScreen
-import br.com.project.hidra.ui.screens.SettingsScreen
 import br.com.project.hidra.ui.theme.AppDeTesteTheme
-import br.com.project.hidra.ui.theme.Hidra_Navy
 import br.com.project.hidra.ui.theme.Hidra_Teal
 import br.com.project.hidra.ui.theme.Hidra_White
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkNotificationPermission()
+        createNotificationChannel()
         enableEdgeToEdge()
         setContent {
             AppDeTesteTheme {
@@ -57,107 +53,73 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
+    }
+
+    private fun createNotificationChannel() {
+        val channelId = "water_reminder_channel"
+        val channelName = "Water Reminder"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, channelName, importance)
+        val notificationManager = getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+        Log.d("NotificationChannel", "Canal de notificação criado com sucesso")
+    }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(modifier: Modifier = Modifier) {
-    val screens = remember {
-        listOf(
-            ScreenItem.Home,
-            ScreenItem.Add,
-            ScreenItem.Settings,
-        )
-    }
 
-    var currentScreen by remember { mutableStateOf(screens.first()) }
-
-    val pagerState = rememberPagerState {
-        screens.size
-    }
-
-    LaunchedEffect(currentScreen) {
-        pagerState.animateScrollToPage(screens.indexOf(currentScreen))
-    }
-
-    LaunchedEffect(pagerState.targetPage) {
-        currentScreen = screens[pagerState.targetPage]
-    }
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text(
-                    text = currentScreen.topBarItem.title,
+                    text = "Hidra+",
                     style = TextStyle(
                         color = Hidra_White,
-                        fontSize = 20.sp,
+                        fontSize = 30.sp,
                         lineHeight = 24.sp,
                         letterSpacing = 0.5.sp,
                         fontWeight = FontWeight.Bold
                     ),
                 ) },
-                actions = {
-                    Row(
-                        modifier = Modifier.padding(end = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        currentScreen.topBarItem.icons.forEach { icon ->
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null,
-                                tint = Hidra_White
-                            )
-                        }
-                    }
-                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Hidra_Teal
                 )
             )
         },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Hidra_Teal,
-            ) {
-                screens.forEach { screen ->
-                    with(screen.bottomBarItem) {
-                        NavigationBarItem(
-                            icon = { Icon(imageVector = icon, contentDescription = null) },
-                            label = { Text(label) },
-                            selected = currentScreen == screen,
-                            onClick = { currentScreen = screen },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Hidra_Navy,
-                                unselectedIconColor = Hidra_White,
-                                selectedTextColor = Hidra_White,
-                                unselectedTextColor = Hidra_White,
-                                indicatorColor = Hidra_White
-                            )
-
-                        )
-                    }
-                }
-            }
-        }
     ) { innerPadding ->
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .padding(innerPadding)
-                .background(Hidra_White)
-        ) { page ->
-            when (screens[page]) {
-                ScreenItem.Home -> HomeScreen(
-                    saveConsumptionRegisterUseCase = SaveConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
-                    getConsumptionRegisterUseCase = GetConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
-                    getDailyTotalWaterUseCase = GetDailyWaterTotalUseCase(WaterRegisterRepository()),
-                    addWaterConsumptionUseCase = AddWaterConsumptionUseCase(WaterRegisterRepository())
-                )
-                ScreenItem.Add -> AddScreen()
-                ScreenItem.Settings -> SettingsScreen()
-            }
+        Column(
+            modifier = modifier.padding(innerPadding)
+        ) {
+            HomeScreen(
+                saveConsumptionRegisterUseCase = SaveConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
+                getConsumptionRegisterUseCase = GetConsumptionRegisterUseCase(ConsumptionRegisterRepository()),
+                getDailyTotalWaterUseCase = GetDailyWaterTotalUseCase(WaterRegisterRepository()),
+                addWaterConsumptionUseCase = AddWaterConsumptionUseCase(WaterRegisterRepository()),
+                scheduleWaterReminderUseCase = ScheduleWaterReminderUseCase(context),
+                cancelWaterReminderUseCase = CancelWaterReminderUseCase(context),
+                waterReminderRepository = WaterReminderRepository(WaterReminderLocalDataSource(context))
+            )
         }
     }
 }

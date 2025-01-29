@@ -3,10 +3,13 @@ package br.com.project.hidra.ui.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.project.hidra.data.model.ConsumptionRegisterModel
+import br.com.project.hidra.data.repository.WaterReminderRepository
 import br.com.project.hidra.domain.usecase.AddWaterConsumptionUseCase
+import br.com.project.hidra.domain.usecase.CancelWaterReminderUseCase
 import br.com.project.hidra.domain.usecase.GetConsumptionRegisterUseCase
 import br.com.project.hidra.domain.usecase.GetDailyWaterTotalUseCase
 import br.com.project.hidra.domain.usecase.SaveConsumptionRegisterUseCase
+import br.com.project.hidra.domain.usecase.ScheduleWaterReminderUseCase
 import br.com.project.hidra.ui.screens.home.components.HomeUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,10 +20,28 @@ class HomeViewModel(
     private val saveConsumptionRegisterUseCase: SaveConsumptionRegisterUseCase,
     private val getConsumptionRegisterUseCase: GetConsumptionRegisterUseCase,
     private val getDailyTotalWaterUseCase: GetDailyWaterTotalUseCase,
-    private val addWaterConsumptionUseCase: AddWaterConsumptionUseCase
+    private val addWaterConsumptionUseCase: AddWaterConsumptionUseCase,
+    private val scheduleWaterReminderUseCase: ScheduleWaterReminderUseCase,
+    private val cancelWaterReminderUseCase: CancelWaterReminderUseCase,
+    private val waterReminderRepository: WaterReminderRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
+
+    fun saveAndScheduleReminder(intervalMillis: Long) {
+        // Salva o novo intervalo
+        waterReminderRepository.saveReminderInterval(intervalMillis)
+
+        // Cancela o alarme anterior (se existir)
+        cancelWaterReminderUseCase.execute()
+
+        // Agenda o novo alarme
+        scheduleWaterReminderUseCase.execute(intervalMillis)
+    }
+
+    fun cancelReminder() {
+        cancelWaterReminderUseCase.execute()
+    }
 
     //Adicionar consumo de água
     fun addWaterConsumption() {
@@ -41,7 +62,7 @@ class HomeViewModel(
     }
 
     //Buscar consumo diário de água
-    fun getDailyTotalWater() {
+    private fun getDailyTotalWater() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
 
@@ -101,6 +122,13 @@ class HomeViewModel(
         }
     }
 
+    //Abrir e fechar modal de alarme
+    fun onOpenAlarmModal() {
+        _uiState.value = _uiState.value.copy(isAlarmModalOpen = true)
+    }
+    fun onCloseAlarmModal() {
+        _uiState.value = _uiState.value.copy(isAlarmModalOpen = false)
+    }
 
 
 //Abrir e fechar modal de registro
