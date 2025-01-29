@@ -6,6 +6,8 @@ Este projeto é um exemplo interativo para demonstrar o uso de tecnologias incr�
 
 O Hidra+ é um aplicativo nativo android, nele você podera realizar o cálculo do seu consumo ideal de água, gerenciar seu consumo diário e receber notificações para te lembrar de beber dentro do intervalo de tempo desejado!
 
+https://github.com/user-attachments/assets/1a3fcf03-ee0c-473d-a5a1-e69c8988fa51
+
 Foi desenvolvido com as seguintes tecnologias:
 
 - Linguagem: Kotlin
